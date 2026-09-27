@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Dumbbell } from "lucide-react";
 import { usePlan } from "./PlanProvider";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const { plan, saved } = usePlan();
+
+  const workoutActive = pathname === "/";
+  const planActive = pathname === "/my-plan";
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#292929] bg-[#0b0b0b]/95 backdrop-blur">
@@ -28,22 +33,33 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex">
+
           <Link
             href="/"
-            className="rounded-full bg-[#ccff00] px-5 py-2.5 text-sm font-bold text-black"
+            className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+              workoutActive
+                ? "bg-[#ccff00] text-black"
+                : "text-gray-400 hover:bg-[#181818] hover:text-white"
+            }`}
           >
             Workout
           </Link>
 
           <Link
             href="/my-plan"
-            className="rounded-full px-5 py-2.5 text-sm font-semibold text-gray-400 transition hover:bg-[#181818] hover:text-white"
+            className={`rounded-full px-5 py-2.5 text-sm font-bold transition ${
+              planActive
+                ? "bg-[#ccff00] text-black"
+                : "text-gray-400 hover:bg-[#181818] hover:text-white"
+            }`}
           >
             My Plan
           </Link>
+
         </nav>
 
         <div className="flex items-center gap-2">
+
           <Link
             href="/my-plan"
             className="flex items-center gap-2 rounded-full bg-[#ccff00] px-3 py-2 text-xs font-bold text-black"
@@ -59,6 +75,7 @@ export default function Navbar() {
             <span>Saved</span>
             <span>{saved.length}</span>
           </Link>
+
         </div>
 
       </div>
