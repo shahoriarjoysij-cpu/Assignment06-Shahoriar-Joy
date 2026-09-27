@@ -6,7 +6,7 @@ The application allows users to browse workouts, view workout details, create a 
 
 ## Live Demo
 
-Add your deployed Vercel link here after deployment.
+https://assignment06-shahoriar-joy.vercel.app/
 
 ## Features
 
