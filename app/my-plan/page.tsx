@@ -93,8 +93,7 @@ export default function MyPlan() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-400 md:text-base">
-              Build your workout plan, track your progress, and stay
-              consistent with every session.
+              Cap of five lifts for today. Finish them, then load more.
             </p>
           </div>
 
@@ -180,20 +179,20 @@ export default function MyPlan() {
                 </div>
 
                 <h2 className="oswald mt-6 text-3xl font-bold uppercase">
-                  Nothing here yet
+                  NOTHING HERE YET
                 </h2>
 
                 <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-gray-500">
                   {activeTab === "plan"
-                    ? "Add workouts from the library to build today's training plan."
+                    ? "Browse the library and add a lift to get today moving."
                     : "Save workouts from the library and they will appear here."}
                 </p>
 
                 <Link
-                  href="/#library"
+                  href="/"
                   className="mt-7 inline-flex rounded-full bg-[#ccff00] px-6 py-3 text-sm font-extrabold text-black transition hover:bg-[#d8ff4d]"
                 >
-                  BROWSE WORKOUTS
+                  GO TO WORKOUTS
                 </Link>
 
               </div>
@@ -321,6 +320,7 @@ export default function MyPlan() {
                 })}
 
               </div>
+
             )}
 
           </div>
