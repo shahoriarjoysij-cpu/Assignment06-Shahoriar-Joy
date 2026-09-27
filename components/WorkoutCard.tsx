@@ -18,7 +18,7 @@ export default function WorkoutCard({
   return (
     <Link
       href={`/workout/${workout.id}`}
-      className="group block overflow-hidden rounded-2xl border border-[#292929] bg-[#141414] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#292929] bg-[#141414] transition duration-300 hover:-translate-y-1 hover:border-[#ccff00]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-[#1b1b1b]">
 
@@ -46,17 +46,17 @@ export default function WorkoutCard({
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="flex flex-1 flex-col p-5">
 
         <h3 className="oswald text-2xl font-semibold uppercase leading-tight">
           {workout.name}
         </h3>
 
-        <p className="mt-2 truncate text-sm text-gray-400">
+        <p className="mt-2 min-h-5 truncate text-sm text-gray-400">
           {workout.equipment}
         </p>
 
-        <div className="mt-5 flex items-center justify-between border-t border-[#292929] pt-4 text-xs text-gray-400">
+        <div className="mt-auto flex items-center justify-between border-t border-[#292929] pt-4 text-xs text-gray-400">
 
           <div className="flex items-center gap-1.5">
             <Clock3 size={15} />
