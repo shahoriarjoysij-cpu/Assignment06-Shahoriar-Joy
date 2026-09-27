@@ -93,14 +93,14 @@ export default function MyPlan() {
             </h1>
 
             <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-400 md:text-base">
-              Keep your training focused. Manage today's workouts
-              and save exercises for later.
+              Build your workout plan, track your progress, and stay
+              consistent with every session.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
 
-            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6">
+            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6 transition hover:border-[#444]">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 Exercises
               </p>
@@ -110,7 +110,7 @@ export default function MyPlan() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6">
+            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6 transition hover:border-[#444]">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 Minutes
               </p>
@@ -120,7 +120,7 @@ export default function MyPlan() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6">
+            <div className="rounded-2xl border border-[#292929] bg-[#141414] p-6 transition hover:border-[#444]">
               <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 Calories
               </p>
@@ -136,9 +136,9 @@ export default function MyPlan() {
 
             <button
               onClick={() => setActiveTab("plan")}
-              className={`border-b-2 px-5 py-4 text-sm font-bold transition ${
+              className={`rounded-t-xl border-b-2 px-5 py-4 text-sm font-bold transition ${
                 activeTab === "plan"
-                  ? "border-[#ccff00] text-[#ccff00]"
+                  ? "border-[#ccff00] bg-[#141414] text-[#ccff00]"
                   : "border-transparent text-gray-500 hover:text-white"
               }`}
             >
@@ -151,9 +151,9 @@ export default function MyPlan() {
 
             <button
               onClick={() => setActiveTab("saved")}
-              className={`border-b-2 px-5 py-4 text-sm font-bold transition ${
+              className={`rounded-t-xl border-b-2 px-5 py-4 text-sm font-bold transition ${
                 activeTab === "saved"
-                  ? "border-[#ccff00] text-[#ccff00]"
+                  ? "border-[#ccff00] bg-[#141414] text-[#ccff00]"
                   : "border-transparent text-gray-500 hover:text-white"
               }`}
             >
@@ -169,6 +169,7 @@ export default function MyPlan() {
           <div className="mt-8">
 
             {currentItems.length === 0 ? (
+
               <div className="rounded-3xl border border-dashed border-[#333] bg-[#101010] px-6 py-20 text-center">
 
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#1b1b1b]">
@@ -196,7 +197,9 @@ export default function MyPlan() {
                 </Link>
 
               </div>
+
             ) : (
+
               <div className="space-y-5">
 
                 {currentItems.map((workout) => {
@@ -205,7 +208,7 @@ export default function MyPlan() {
                   return (
                     <div
                       key={workout.id}
-                      className={`overflow-hidden rounded-2xl border bg-[#141414] transition ${
+                      className={`overflow-hidden rounded-2xl border bg-[#141414] transition hover:border-[#444] ${
                         isCompleted
                           ? "border-[#ccff00]/40"
                           : "border-[#292929]"
@@ -218,7 +221,7 @@ export default function MyPlan() {
                           <img
                             src={workout.image}
                             alt={workout.name}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover transition duration-500 hover:scale-105"
                           />
                         </div>
 
