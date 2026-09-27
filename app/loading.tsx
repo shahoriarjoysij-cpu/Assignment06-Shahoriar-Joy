@@ -17,8 +17,8 @@ export default function Loading() {
           <div className="h-full w-1/2 animate-pulse rounded-full bg-[#ccff00]" />
         </div>
 
-        <p className="mt-4 text-sm text-gray-500">
-          Loading your workouts...
+        <p className="mt-4 text-sm font-medium tracking-wide text-gray-500">
+         Preparing your workouts...
         </p>
 
       </div>

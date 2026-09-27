@@ -14,8 +14,8 @@ export default function NotFound() {
           FITLOG
         </p>
 
-        <h1 className="oswald mt-3 text-7xl font-bold uppercase">
-          404
+        <h1 className="oswald mt-3 text-8xl font-bold      uppercase tracking-tight">
+         404
         </h1>
 
         <h2 className="mt-3 text-2xl font-bold">
