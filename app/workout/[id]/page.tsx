@@ -1,110 +1,43 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Clock3,
   Flame,
-  Star,
   Dumbbell,
-  Target,
-  BarChart3,
+  Star,
+  CheckCircle2,
 } from "lucide-react";
-
-import type { Workout } from "@/lib/api";
-import { usePlan } from "@/components/PlanProvider";
-import Toast from "@/components/Toast";
+import { useParams } from "next/navigation";
+import { getWorkout, type Workout } from "@/lib/api";
+import DetailActions from "@/components/DetailActions";
 
 export default function WorkoutDetails() {
   const params = useParams();
-  const router = useRouter();
-
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-  const [toast, setToast] = useState("");
-
-  const {
-    addToPlan,
-    saveWorkout,
-    isInPlan,
-    isSaved,
-  } = usePlan();
 
   useEffect(() => {
     async function loadWorkout() {
-      try {
-        const response = await fetch(
-          `https://api.abcz.workers.dev/api/fitlog/${params.id}`
-        );
-
-        if (!response.ok) {
-          setNotFound(true);
-          return;
-        }
-
-        const data: Workout = await response.json();
-        setWorkout(data);
-      } catch {
-        setNotFound(true);
-      } finally {
-        setLoading(false);
-      }
+      const data = await getWorkout(String(params.id));
+      setWorkout(data);
+      setLoading(false);
     }
 
-    if (params.id) {
-      loadWorkout();
-    }
+    loadWorkout();
   }, [params.id]);
-
-  function showToast(message: string) {
-    setToast(message);
-
-    setTimeout(() => {
-      setToast("");
-    }, 2500);
-  }
-
-  function handleAddToPlan() {
-    if (!workout) return;
-
-    if (isInPlan(workout.id)) {
-      showToast("Already in today's plan");
-      return;
-    }
-
-    const added = addToPlan(workout);
-
-    if (added) {
-      showToast("Added to today's plan");
-    } else {
-      showToast("Today's plan is full");
-    }
-  }
-
-  function handleSave() {
-    if (!workout) return;
-
-    if (isSaved(workout.id)) {
-      showToast("Already saved");
-      return;
-    }
-
-    const saved = saveWorkout(workout);
-
-    if (saved) {
-      showToast("Saved for later");
-    }
-  }
 
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#0b0b0b] text-white">
         <div className="text-center">
-          <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#333] border-t-[#ccff00]" />
-
-          <p className="mt-5 text-sm font-semibold text-gray-400">
+          <Dumbbell
+            size={40}
+            className="mx-auto animate-pulse text-[#ccff00]"
+          />
+          <p className="mt-4 text-sm text-gray-400">
             Loading workout...
           </p>
         </div>
@@ -112,7 +45,7 @@ export default function WorkoutDetails() {
     );
   }
 
-  if (notFound || !workout) {
+  if (!workout) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#0b0b0b] px-5 text-white">
         <div className="text-center">
@@ -120,216 +53,138 @@ export default function WorkoutDetails() {
             Workout Not Found
           </h1>
 
-          <p className="mt-3 text-gray-400">
-            The workout you are looking for does not exist.
+          <p className="mt-3 text-gray-500">
+            The requested workout does not exist.
           </p>
 
-          <button
-            onClick={() => router.push("/")}
-            className="mt-7 rounded-full bg-[#ccff00] px-6 py-3 text-sm font-extrabold text-black"
+          <Link
+            href="/"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#ccff00] px-6 py-3 text-sm font-extrabold text-black"
           >
-            BACK TO LIBRARY
-          </button>
+            <ArrowLeft size={17} />
+            BACK TO WORKOUTS
+          </Link>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] text-white">
-      <div className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-14">
-
-        <button
-          onClick={() => router.back()}
-          className="mb-8 flex items-center gap-2 text-sm font-semibold text-gray-400 transition hover:text-[#ccff00]"
+    <main className="min-h-screen bg-[#0b0b0b] px-5 py-10 text-white md:px-8 md:py-14">
+      <div className="mx-auto max-w-7xl">
+        <Link
+          href="/"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-400 transition hover:text-[#ccff00]"
         >
-          <ArrowLeft size={18} />
-          BACK TO LIBRARY
-        </button>
+          <ArrowLeft size={17} />
+          Back to Workout Library
+        </Link>
 
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
-
-          <div className="overflow-hidden rounded-[2rem] border border-[#292929] bg-[#141414]">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+          <div className="overflow-hidden rounded-3xl border border-[#292929] bg-[#141414]">
             <img
               src={workout.image}
               alt={workout.name}
-              className="aspect-[4/3] h-full w-full object-cover lg:aspect-[4/5]"
+              className="h-[350px] w-full object-cover sm:h-[500px] lg:h-full lg:min-h-[650px]"
             />
           </div>
 
-          <div>
-
-            <div className="mb-5 flex flex-wrap gap-2">
+          <div className="flex flex-col justify-center">
+            <div className="flex flex-wrap gap-2">
               {workout.muscleGroups.map((group) => (
                 <span
                   key={group}
-                  className="rounded-full bg-[#ccff00] px-3 py-1.5 text-xs font-extrabold uppercase text-black"
+                  className="rounded-full bg-[#1d1d1d] px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ccff00]"
                 >
                   {group}
                 </span>
               ))}
             </div>
 
-            <h1 className="oswald text-5xl font-bold uppercase leading-[0.95] md:text-6xl">
+            <h1 className="oswald mt-5 text-5xl font-bold uppercase leading-[0.95] sm:text-6xl">
               {workout.name}
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-7 text-gray-400">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-gray-400">
               {workout.description}
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-
               <div className="rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <Clock3 size={20} className="text-[#ccff00]" />
-
-                <p className="mt-3 text-xs uppercase text-gray-500">
-                  Duration
-                </p>
-
-                <p className="mt-1 font-bold">
-                  {workout.duration} min
-                </p>
+                <Clock3 size={18} className="text-[#ccff00]" />
+                <p className="mt-3 text-xs text-gray-500">Duration</p>
+                <p className="mt-1 font-bold">{workout.duration} min</p>
               </div>
 
               <div className="rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <Flame size={20} className="text-[#ccff00]" />
-
-                <p className="mt-3 text-xs uppercase text-gray-500">
-                  Calories
-                </p>
-
-                <p className="mt-1 font-bold">
-                  {workout.caloriesBurned} kcal
-                </p>
+                <Flame size={18} className="text-[#ccff00]" />
+                <p className="mt-3 text-xs text-gray-500">Calories</p>
+                <p className="mt-1 font-bold">{workout.caloriesBurned} kcal</p>
               </div>
 
               <div className="rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <Target size={20} className="text-[#ccff00]" />
-
-                <p className="mt-3 text-xs uppercase text-gray-500">
-                  Sets
-                </p>
-
-                <p className="mt-1 font-bold">
-                  {workout.sets}
-                </p>
+                <Star size={18} className="text-[#ccff00]" fill="currentColor" />
+                <p className="mt-3 text-xs text-gray-500">Rating</p>
+                <p className="mt-1 font-bold">{workout.rating}</p>
               </div>
 
               <div className="rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <Star
-                  size={20}
-                  fill="currentColor"
-                  className="text-[#ccff00]"
-                />
+                <Dumbbell size={18} className="text-[#ccff00]" />
+                <p className="mt-3 text-xs text-gray-500">Difficulty</p>
+                <p className="mt-1 font-bold">{workout.difficulty}</p>
+              </div>
+            </div>
 
-                <p className="mt-3 text-xs uppercase text-gray-500">
-                  Rating
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-[#292929] p-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Equipment
                 </p>
+                <p className="mt-2 font-semibold">{workout.equipment}</p>
+              </div>
 
-                <p className="mt-1 font-bold">
-                  {workout.rating}
+              <div className="rounded-2xl border border-[#292929] p-5">
+                <p className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Sets & Reps
+                </p>
+                <p className="mt-2 font-semibold">
+                  {workout.sets} sets × {workout.reps}
                 </p>
               </div>
-
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-8">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#ccff00]">
+                How To Perform
+              </p>
 
-              <div className="flex items-center gap-3 rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <Dumbbell
-                  size={20}
-                  className="text-[#ccff00]"
-                />
-
-                <div>
-                  <p className="text-xs uppercase text-gray-500">
-                    Equipment
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold">
-                    {workout.equipment}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-2xl border border-[#292929] bg-[#141414] p-4">
-                <BarChart3
-                  size={20}
-                  className="text-[#ccff00]"
-                />
-
-                <div>
-                  <p className="text-xs uppercase text-gray-500">
-                    Difficulty
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold">
-                    {workout.difficulty}
-                  </p>
-                </div>
-              </div>
-
-            </div>
-
-            <div className="mt-10">
-              <h2 className="oswald text-3xl font-bold uppercase">
-                Instructions
-              </h2>
-
-              <div className="mt-5 space-y-4">
-                {workout.instructions.map(
-                  (instruction, index) => (
-                    <div
-                      key={index}
-                      className="flex gap-4 rounded-2xl border border-[#292929] bg-[#141414] p-5"
-                    >
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ccff00] text-sm font-extrabold text-black">
-                        {index + 1}
-                      </div>
-
-                      <p className="text-sm leading-6 text-gray-300">
-                        {instruction}
-                      </p>
-                    </div>
-                  )
-                )}
+              <div className="mt-4 space-y-3">
+                {workout.instructions.map((instruction, index) => (
+                  <div
+                    key={instruction}
+                    className="flex gap-3 rounded-xl border border-[#292929] bg-[#111111] p-4"
+                  >
+                    <CheckCircle2
+                      size={20}
+                      className="mt-0.5 shrink-0 text-[#ccff00]"
+                    />
+                    <p className="text-sm leading-6 text-gray-300">
+                      <span className="mr-2 font-bold text-white">
+                        {index + 1}.
+                      </span>
+                      {instruction}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
-
-              <button
-                onClick={handleAddToPlan}
-                disabled={isInPlan(workout.id)}
-                className="flex items-center justify-center gap-2 rounded-full bg-[#ccff00] px-5 py-4 text-sm font-extrabold text-black transition hover:bg-[#d8ff4d] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <Dumbbell size={18} />
-
-                {isInPlan(workout.id)
-                  ? "ALREADY IN PLAN"
-                  : "ADD TO TODAY'S PLAN"}
-              </button>
-
-              <button
-                onClick={handleSave}
-                disabled={isSaved(workout.id)}
-                className="flex items-center justify-center gap-2 rounded-full border border-[#555] px-5 py-4 text-sm font-extrabold text-white transition hover:border-[#ccff00] hover:text-[#ccff00] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <Star size={18} />
-
-                {isSaved(workout.id)
-                  ? "SAVED"
-                  : "SAVE FOR LATER"}
-              </button>
-
+            <div className="mt-8">
+              <DetailActions workout={workout} />
             </div>
-
           </div>
         </div>
       </div>
-
-      {toast && <Toast message={toast} />}
     </main>
   );
 }
