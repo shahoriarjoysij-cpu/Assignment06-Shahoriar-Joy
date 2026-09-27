@@ -109,7 +109,7 @@ export default function HomeLibrary() {
             />
 
             <p className="text-sm font-semibold">
-              Loading workouts…
+              Loading workouts...
             </p>
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function HomeLibrary() {
       )}
 
       {!loading && !error && (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:gap-6">
           {sortedWorkouts.map((workout) => (
             <WorkoutCard
               key={workout.id}
